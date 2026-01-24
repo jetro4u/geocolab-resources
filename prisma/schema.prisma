@@ -1,0 +1,307 @@
+/**
+ * Prisma Schema for GEOCoLab
+ * 
+ * Database: PostgreSQL (Neon/Supabase)
+ * 
+ * Models:
+ * - User: Authentication & profiles
+ * - Account: OAuth providers
+ * - Subscription: Pricing tiers
+ * - Tool: Tool catalog
+ * - LabGeneration: AI generation history
+ * - GeoMetric: GEO performance tracking
+ * - Resource: Content management (blog, research, etc.)
+ */
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// Authentication Models (NextAuth)
+// ============================================
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  role          UserRole  @default(USER)
+  
+  // Relations
+  accounts      Account[]
+  sessions      Session[]
+  subscription  Subscription?
+  generations   LabGeneration[]
+  metrics       GeoMetric[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ============================================
+// User & Billing Models
+// ============================================
+
+enum UserRole {
+  USER
+  PRO
+  ENTERPRISE
+  ADMIN
+}
+
+enum SubscriptionTier {
+  FREE
+  PRO
+  ENTERPRISE
+}
+
+model Subscription {
+  id        String           @id @default(cuid())
+  userId    String           @unique
+  tier      SubscriptionTier @default(FREE)
+  
+  // Stripe fields
+  stripeCustomerId       String?   @unique
+  stripeSubscriptionId   String?   @unique
+  stripePriceId          String?
+  stripeCurrentPeriodEnd DateTime?
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("subscriptions")
+}
+
+// ============================================
+// Tool Catalog
+// ============================================
+
+enum ToolTier {
+  FREE
+  PRO
+  ENTERPRISE
+}
+
+model Tool {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String    @db.Text
+  icon        String?
+  screenshot  String?
+  demoUrl     String?
+  tier        ToolTier  @default(FREE)
+  category    String    // 'audit', 'optimization', 'analytics', etc.
+  featured    Boolean   @default(false)
+  active      Boolean   @default(true)
+  
+  // Metadata
+  usageCount  Int       @default(0)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([slug])
+  @@index([category])
+  @@map("tools")
+}
+
+// ============================================
+// Lab (AI Generation)
+// ============================================
+
+enum GenerationType {
+  SOCIAL
+  WEB
+  IMAGE
+  VIDEO
+  AD
+}
+
+model LabGeneration {
+  id       String         @id @default(cuid())
+  userId   String
+  type     GenerationType
+  
+  // Input
+  prompt   String         @db.Text
+  template String?
+  
+  // Output
+  result   String         @db.Text
+  metadata Json?          // model, tokens, cost, etc.
+  
+  // Tracking
+  liked    Boolean        @default(false)
+  shared   Boolean        @default(false)
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  
+  @@index([userId, type])
+  @@index([createdAt])
+  @@map("lab_generations")
+}
+
+// ============================================
+// GEO Metrics Tracking
+// ============================================
+
+enum MetricType {
+  CITATION_COUNT
+  AUTHORITY_SCORE
+  VISIBILITY_INDEX
+  SIGNAL_STRENGTH
+}
+
+model GeoMetric {
+  id       String     @id @default(cuid())
+  userId   String
+  type     MetricType
+  value    Float
+  platform String     // 'x', 'google', 'perplexity', etc.
+  
+  // Context
+  url      String?
+  metadata Json?      // additional tracking data
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  recordedAt DateTime @default(now())
+  
+  @@index([userId, type, platform])
+  @@index([recordedAt])
+  @@map("geo_metrics")
+}
+
+// ============================================
+// Content Management (Resources)
+// ============================================
+
+enum ResourceType {
+  BLOG
+  RESEARCH
+  CASE_STUDY
+  DEFINITION
+  WEBINAR
+  LOCAL_GEO
+}
+
+enum ResourceStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Resource {
+  id          String         @id @default(cuid())
+  type        ResourceType
+  status      ResourceStatus @default(DRAFT)
+  
+  // Content
+  title       String
+  slug        String         @unique
+  description String?        @db.Text
+  content     String         @db.Text
+  excerpt     String?        @db.Text
+  
+  // SEO
+  metaTitle       String?
+  metaDescription String?      @db.Text
+  ogImage         String?
+  
+  // Metadata
+  authorName   String?
+  category     String?
+  tags         String[]
+  readTime     Int?           // minutes
+  
+  // Media
+  coverImage  String?
+  
+  // Engagement
+  viewCount   Int            @default(0)
+  likeCount   Int            @default(0)
+  
+  publishedAt DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  
+  @@index([slug])
+  @@index([type, status])
+  @@index([publishedAt])
+  @@map("resources")
+}
+
+// ============================================
+// Partner/Integration Tracking
+// ============================================
+
+model Integration {
+  id          String  @id @default(cuid())
+  name        String
+  slug        String  @unique
+  description String  @db.Text
+  logo        String?
+  websiteUrl  String?
+  category    String  // 'cloud', 'ai', 'analytics', etc.
+  featured    Boolean @default(false)
+  active      Boolean @default(true)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("integrations")
+}
