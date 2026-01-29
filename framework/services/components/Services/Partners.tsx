@@ -1,48 +1,42 @@
 "use client";
+
 import React from "react";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 
-// Define interface for partner items
-interface PartnerItem {
-  id: number;
-  imageSrc: string;
-  imageAlt: string;
-}
-
 const Partners: React.FC = () => {
-  // Dynamic data for partner items
-  const partnersData: PartnerItem[] = [
+  // Dynamic partners data
+  const partners = [
     {
       id: 1,
-      imageSrc: "/images/partner/partner1.png",
-      imageAlt: "partner-image",
+      image: "/images/partner/partner1.png",
+      alt: "partner-image",
     },
     {
       id: 2,
-      imageSrc: "/images/partner/partner2.png",
-      imageAlt: "partner-image",
+      image: "/images/partner/partner2.png",
+      alt: "partner-image",
     },
     {
       id: 3,
-      imageSrc: "/images/partner/partner3.png",
-      imageAlt: "partner-image",
+      image: "/images/partner/partner3.png",
+      alt: "partner-image",
     },
     {
       id: 4,
-      imageSrc: "/images/partner/partner4.png",
-      imageAlt: "partner-image",
+      image: "/images/partner/partner4.png",
+      alt: "partner-image",
     },
     {
       id: 5,
-      imageSrc: "/images/partner/partner5.png",
-      imageAlt: "partner-image",
+      image: "/images/partner/partner5.png",
+      alt: "partner-image",
     },
     {
       id: 6,
-      imageSrc: "/images/partner/partner1.png",
-      imageAlt: "partner-image",
+      image: "/images/partner/partner1.png",
+      alt: "partner-image",
     },
   ];
 
@@ -67,12 +61,12 @@ const Partners: React.FC = () => {
             modules={[Autoplay]}
             className="partner-slides"
           >
-            {partnersData.map((partner) => (
+            {partners.map((partner) => (
               <SwiperSlide key={partner.id}>
                 <div className="partner-item">
                   <Image
-                    src={partner.imageSrc}
-                    alt={partner.imageAlt}
+                    src={partner.image}
+                    alt={partner.alt}
                     width={130}
                     height={38}
                   />

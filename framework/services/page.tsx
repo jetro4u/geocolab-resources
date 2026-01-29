@@ -1,33 +1,41 @@
 import React from "react";
-import Navbar5 from "@/components/Layouts/Navigations/Navbar5";
-import PageTopTitle from "@/components/Common/PageTopTitle";
-import WhyChooseUs from "@/components/Services/WhyChooseUs";
+import Navbar2 from "@/components/Layouts/Navigations/Navbar2";
+import HelpDesk from "@/components/Services/HelpDesk";
 import Services from "@/components/Services/Services";
-import TestimonialFour from "@/components/Testimonials/TestimonialFour";
-import PartnerStyle1 from "@/components/Partners/PartnerStyle1";
-import FooterFive from "@/components/Layouts/Footer/FooterFive";
+import WorkingProcess from "@/components/Services/WorkingProcess";
+import GetStarted from "@/components/Services/GetStarted";
+import Partners from "@/components/Services/Partners";
+import FooterTwo from "@/components/Layouts/Footer/FooterTwo";
 
 export default function Page() {
   return (
     <>
-      <Navbar5 />
+      <Navbar2 />
 
-      <PageTopTitle
-        subTitle="Our Services"
-        title="Our work is delivered by the best team in the world"
-      />
+      <div className="page-title-area bg-black">
+        <div className="container">
+          <div className="page-title-content">
+            <span className="sub-title">Our Services</span>
+            <h1>Our work is delivered by the best team in the world</h1>
+          </div>
+        </div>
+      </div>
 
-      <WhyChooseUs />
+      <HelpDesk />
 
       <Services />
 
-      <TestimonialFour />
+      <WorkingProcess />
 
-      <div className="bg-f9f9f9 br-bottom-100">
-        <PartnerStyle1 />
+      <div className="pb-100">
+        <GetStarted />
       </div>
       
-      <FooterFive />
+      <div className="bg-fff4f8">
+        <Partners />
+      </div>
+      
+      <FooterTwo />
     </>
   );
-}
+};

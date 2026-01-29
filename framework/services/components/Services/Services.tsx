@@ -8,69 +8,80 @@ const Services: React.FC = () => {
   const services = [
     {
       id: 1,
-      iconClass: "flaticon-assets",
-      title: "Property Management",
+      icon: "flaticon-career",
+      title: "Company & Business Setup",
       description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed est non feugiat sagidyttis, donec.",
+        "Lorem ipsum dolor sit amet, adipiscing elit. Dui id duis accumsan, eget aliquam varius. A sodales id nulla amet ultricies eget. At nulla mattis mattis.",
       link: "/services/details",
     },
     {
       id: 2,
-      iconClass: "flaticon-mortgage",
-      title: "Finance Real Estate",
+      icon: "flaticon-growth",
+      title: "Strategic Consulting",
       description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed est non feugiat sagidyttis, donec.",
+        "Lorem ipsum dolor sit amet, adipiscing elit. Dui id duis accumsan, eget aliquam varius. A sodales id nulla amet ultricies eget. At nulla mattis mattis.",
       link: "/services/details",
     },
     {
       id: 3,
-      iconClass: "flaticon-challenges",
-      title: "Business Development",
+      icon: "flaticon-return-of-investment",
+      title: "Investment Management",
       description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed est non feugiat sagidyttis, donec.",
+        "Lorem ipsum dolor sit amet, adipiscing elit. Dui id duis accumsan, eget aliquam varius. A sodales id nulla amet ultricies eget. At nulla mattis mattis.",
       link: "/services/details",
     },
     {
       id: 4,
-      iconClass: "flaticon-gold-bar",
-      title: "Recover Asset Value",
+      icon: "flaticon-management-1",
+      title: "Company Management",
       description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed est non feugiat sagidyttis, donec.",
+        "Lorem ipsum dolor sit amet, adipiscing elit. Dui id duis accumsan, eget aliquam varius. A sodales id nulla amet ultricies eget. At nulla mattis mattis.",
+      link: "/services/details",
+    },
+    {
+      id: 5,
+      icon: "flaticon-money",
+      title: "Finance Consulting",
+      description:
+        "Lorem ipsum dolor sit amet, adipiscing elit. Dui id duis accumsan, eget aliquam varius. A sodales id nulla amet ultricies eget. At nulla mattis mattis.",
+      link: "/services/details",
+    },
+    {
+      id: 6,
+      icon: "flaticon-human-resources",
+      title: "Human Resources",
+      description:
+        "Lorem ipsum dolor sit amet, adipiscing elit. Dui id duis accumsan, eget aliquam varius. A sodales id nulla amet ultricies eget. At nulla mattis mattis.",
       link: "/services/details",
     },
   ];
 
   return (
     <>
-      <div className="services-area pt-100 bg-f9f9f9 pb-75">
+      <div className="services-area bg-fff4f8 pt-100 pb-75">
         <div className="container">
           <div className="section-title">
-            <span className="sub-title green-color">What We Offer</span>
-            <h2 className="nunito-font">
-              Everyone deserves the opportunity of home
-            </h2>
+            <span className="sub-title">Services We Offer</span>
+            <h2>We provide high-impact business services</h2>
           </div>
           <div className="row justify-content-center">
             {services.map((service) => (
               <div
                 key={service.id}
-                className="col-lg-6 col-md-6 col-sm-6"
+                className="col-lg-4 col-md-6 col-sm-6"
                 data-aos="fade-up"
                 data-aos-duration="800"
                 data-aos-once="true"
                 data-aos-delay={service.id * 100}
               >
-                <div className="services-box">
+                <div className="single-services-box">
                   <div className="icon">
-                    <i className={service.iconClass}></i>
+                    <i className={service.icon}></i>
                   </div>
-                  <h3 className="nunito-font">
+                  <h3>
                     <Link href={service.link}>{service.title}</Link>
                   </h3>
                   <p>{service.description}</p>
-                  <Link href={service.link} className="link-btn">
-                    Learn More <i className="bx bx-chevron-right"></i>
-                  </Link>
                 </div>
               </div>
             ))}
